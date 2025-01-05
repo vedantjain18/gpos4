@@ -1,8 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Script from "next/script";
-import Head from "next/head";
+import  "bootstrap/dist/css/bootstrap.min.css"
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
 import NavBar from "@/components/common/NavBar";
+
+config.autoAddCss = false;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,15 +25,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      {/* <Head>
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" />
-	 	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
-
-      </Head> */}
-
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="">
         <NavBar />
-        {children}
+        <main>
+          {children}
+        </main>
       </body>
     </html>
   );
