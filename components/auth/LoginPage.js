@@ -1,5 +1,7 @@
 "use client";
 
+import "@/components/styles/styles.css";
+
 function LoginPage() {
   function handleFormSubmit(event) {  
     event.preventDefault();
@@ -8,7 +10,7 @@ function LoginPage() {
     <div className="container">
       <div className="login">
 			<h1 className="text-center">Login</h1>
-        {/* <form id="loginForm" >
+        <form id="loginForm" >
           <label htmlFor="username">
             <i className="fas fa-user"></i>
           </label>
@@ -26,9 +28,9 @@ function LoginPage() {
           <div id="success" className="success"></div>
 
 				  <input type="submit" id="Login" value="Login" />      
-			  </form> */}
+			  </form>
 
-        <form className="card" style={{ padding: "2rem 10rem" }}>
+        {/* <form className="card" style={{ padding: "2rem 10rem" }}>
           <div className="form-group">
             <label htmlFor="username">User Name</label>
             <input type="text" name="username" id="username" minLength="3" required className="form-control" aria-describedby="usernameHelp" />
@@ -43,7 +45,7 @@ function LoginPage() {
             <a href="./NewUserRegistraion.html" className="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">New User?</a>
           </div>
           <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
+        </form> */}
       </div>
     </div>
   );

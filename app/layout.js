@@ -3,7 +3,7 @@ import "./globals.css";
 import  "bootstrap/dist/css/bootstrap.min.css"
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import NavBar from "@/components/common/NavBar";
+import ConditionalNav from "@/components/common/ConditionalNav";
 
 config.autoAddCss = false;
 
@@ -23,11 +23,12 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
       <body className="">
-        <NavBar />
         <main>
+          <ConditionalNav />
           {children}
         </main>
       </body>
