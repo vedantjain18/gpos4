@@ -1,6 +1,6 @@
 "use client";
 
-import "@/components/styles/styles.css";
+import "@/components/styles/loginstyles.css";
 
 function LoginPage() {
   function handleFormSubmit(event) {  

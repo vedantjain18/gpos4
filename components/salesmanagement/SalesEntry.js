@@ -4,10 +4,10 @@ const SalesEntry = () => {
   return (
                 
 <div className="container mt-3">
-<h4 className="alert-info text-center mb-1 p-1">  SALES (SCAN POS) </h4>
+<h4 className="alert alert-info text-center mb-1 p-1">  SALES (SCAN POS) </h4>
 <div className="row">
     <div className="col-sm-2">
-
+    User: <br /><br />
             <form className="col-sm-12" id="custid" method="post" action="">
                
                 <input type="text" className="form-control" id="custmobno" name="custmobno" placeholder="Enter Mobile No" required />
@@ -16,7 +16,7 @@ const SalesEntry = () => {
 
                 <button type="submit" className="invisible" id="custadd">Add</button>
             <div id="msgcstr"></div>
-            </form>
+            </form><hr />
 
             <form className="col-sm-12" id="subskuid" method="post" action="">
                
@@ -24,11 +24,10 @@ const SalesEntry = () => {
                 <input type="text" className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
                 
 
-                <button type="submit" className="btn btn-info" id="btnadd">Add</button>
+                <button type="submit" className="btn btn-info" id="btnadd">Add</button><hr />
                 <div id="msg"></div>
             </form>
            
-            <br />
             <div className="col-sm-12">
             Bill Total:<div id="billtotal"></div>
             </div>
