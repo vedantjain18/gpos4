@@ -1,5 +1,5 @@
 "use client";
-import "@/components/styles/styles.css";
+import "@/components/styles/loginstyles.css";
 import { useState } from "react";
 
 const OwnerRegistration = () => {
@@ -9,6 +9,18 @@ const OwnerRegistration = () => {
         event.preventDefault();
         console.log(event.target);
         console.log(ownerData);
+
+        fetch('http://127.0.0.1:8000/create/api/owner-manage/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(ownerData),
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        })
 
     }
     function changeOwnerInputs(e) {
@@ -21,8 +33,7 @@ const OwnerRegistration = () => {
     <h1>Owner Registration</h1>
     <form id="OwnerRegistrationForm" onSubmit={handleFormSubmit}>
         
-        <input type="text" name="firstname" onChange={changeOwnerInputs} value={ownerData.firstname} placeholder="First Name" id="FirstName" minLength="3" maxLength="20" required />
-        <input type="text" name="lastname" onChange={changeOwnerInputs} value={ownerData.lastname} placeholder="Last Name" id="LastName" minLength="3" maxLength="20" required />
+        <input type="text" name="fullname" onChange={changeOwnerInputs} value={ownerData.fullname} placeholder="Name" id="FullName" minLength="3" maxLength="20" required />
         <input type="text" name="username" onChange={changeOwnerInputs} value={ownerData.username} placeholder="Choose A UserName" id="UserName" minLength="3" maxLength="20" required /><a href="./.html" className="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Check Availability</a>
         <br /><br />
         <input type="password" name="password" onChange={changeOwnerInputs} value={ownerData.password} placeholder="Choose A Password" id="Password" minLength="9" maxLength="20" required /> {/*</br>*password should be atleast 9 characters long with one special character */}

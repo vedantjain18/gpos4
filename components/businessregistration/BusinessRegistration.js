@@ -1,6 +1,6 @@
 
 "use client";
-import "@/components/styles/styles.css";
+import "@/components/styles/formstyles.css";
 
 const BusinessRegistration = () => {
     function handleFormSubmit(event) {  
