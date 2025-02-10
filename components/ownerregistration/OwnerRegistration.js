@@ -3,7 +3,22 @@ import "@/components/styles/loginstyles.css";
 import { useState } from "react";
 
 const OwnerRegistration = () => {
-    const [ownerData, setOwnerData] = useState({});
+    const [ownerData, setOwnerData] = useState({
+      fullname: "",
+      username: "",
+      password: "",
+      password2: "",
+      email: "",
+      mobile: "",
+      whatsapp: "",
+      address1: "",
+      address2: "",
+      city: "",
+      pincode: "",
+      district: "",
+      state: "",
+      country: ""
+  });
     
     function handleFormSubmit(event) {  
         event.preventDefault();
@@ -23,11 +38,11 @@ const OwnerRegistration = () => {
         })
 
     }
+    
     function changeOwnerInputs(e) {
-        console.log(e);
         setOwnerData({...ownerData, [e.target.name]:e.target.value})
-        
     }
+
   return (
     <div className="login">
     <h1>Owner Registration</h1>
