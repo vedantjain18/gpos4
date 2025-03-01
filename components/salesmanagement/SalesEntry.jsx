@@ -1,5 +1,6 @@
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
+
 const SalesEntry = () => {
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
@@ -13,7 +14,7 @@ const SalesEntry = () => {
             console.log(err);
         }
     }
-    
+
     useEffect(()=> {
         const fetchedItems = fetchAllIitems()
         if(fetchedItems) {
