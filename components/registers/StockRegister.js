@@ -30,7 +30,6 @@ const StockRegisterALL = () => {
                         <th scope="col">Item GST</th>
                         <th scope="col">Total Value</th>
                         
-    
                     </tr>
             </thead>
             <tbody id="tbody">
