@@ -1,3 +1,5 @@
+"use client";
+
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
 
@@ -7,7 +9,8 @@ const SalesEntry = () => {
 
     const fetchAllIitems = async () => {
         try {
-            const fetchedItemsResponse = await fetch(URL);
+            const fetchedItemsResponse = await fetch(URL + 'main/item-master/'
+            );
             const fetchedItems = await fetchedItemsResponse.json();
             return fetchedItems.data;
         } catch(err) {
@@ -16,14 +19,19 @@ const SalesEntry = () => {
     }
 
     useEffect(()=> {
-        const fetchedItems = fetchAllIitems()
-        if(fetchedItems) {
-            setItems(fetchedItems);
-        }
+        fetchAllIitems().then((fetchedItems) => {
+            console.log(fetchedItems);
+            if(fetchedItems) {
+                setItems(fetchedItems);
+            }
+        })
+        
     }, [])
 
     const filterItems = (searchTerm) => {
+        
         const regex = new RegExp(searchTerm, 'i');
+        console.log(regex);
         const filteredItems = items.filter(item => regex.test(item.itemname));
         return filteredItems;
     }
@@ -31,6 +39,8 @@ const SalesEntry = () => {
     const handleSearchByText = (event) => {
         const searchTerm = event.target.value;
         const filteredItems = filterItems(searchTerm);
+        console.log(filteredItems);
+        
         setFilteredItems(filteredItems);
     }
 
@@ -94,7 +104,6 @@ return (
                         <th scope="col">GST</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Action</th>
-
                     </tr>
             </thead>
             <tbody id="tbody"></tbody>
