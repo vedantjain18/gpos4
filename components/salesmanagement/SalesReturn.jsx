@@ -1,5 +1,22 @@
+"use client";
 
-const SalesReturn = () => {
+import { URL } from '@/utils/config';
+import { useEffect, useState } from "react";
+
+const SalesReturnBillPending = () => {
+    const [SalesReturnBillPending, setSalesReturnBillPending] = useState([
+
+    ]);
+
+    const business_id = 1;
+    const employee_master_id = 1;
+
+    useEffect(() => {
+        fetch(`${URL}salesmgmt/api/sales-return-bill-pending/?business_id=${business_id}?employee_master_id=${employee_master_id}`)
+            .then((res) => res.json())
+            .then((data) => setSalesReturnBillPending(data.data));
+    }, []);
+
   return (
     <div className="container mt-3">
             <h4 className="alert alert-info text-center mb-1 p-1"> Sales Return (Scan) </h4>
@@ -51,7 +68,6 @@ const SalesReturn = () => {
                         <th scope="col">Product Name</th>
                         <th scope="col">MRP</th>
                         <th scope="col">Quantity</th>
-                        
                         <th scope="col">SaleRate</th>                
                         <th scope="col">GST</th>
                         <th scope="col">Amount</th>
@@ -59,7 +75,22 @@ const SalesReturn = () => {
 
                     </tr>
             </thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody">
+                {SalesReturnBillPending.map((i, key) => (
+                    <tr key={key}>
+                        <td>{i.sales_bill_number}</td>
+                        <td>{i.item_barcode}</td>
+                        <td>{i.item_name}</td>
+                        <td>{i.item_mrp}</td>
+                        <td>{i.item_qty}</td>
+                        <td>{i.item_sale_rate}</td>
+                        <td>{i.item_gst}</td>
+                        <td>{i.item_qty*i.item_sale_rate}</td>
+                        <td>actions</td>
+                    </tr>
+                ))}
+
+            </tbody>
             </table>
             
             </div>
@@ -68,4 +99,4 @@ const SalesReturn = () => {
   )
 }
 
-export default SalesReturn
+export default SalesReturnBillPending

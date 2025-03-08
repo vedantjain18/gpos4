@@ -1,5 +1,20 @@
 
+"use client";
+
+import { useEffect, useState } from "react";
+
 const PurchaseRegister = () => {
+    const [items, setItems] = useState([
+        // {itembarcode: 1, itemname: "item1", itemqty: 10, itemmrp: 100, itempurrate: 90, itemsalerate: 110, itemtaxid: 10},
+        // {itembarcode: 2, itemname: "item2", itemqty: 20, itemmrp: 200, itempurrate: 190, itemsalerate: 210, itemtaxid: 20},
+    ]);
+
+    useEffect(() => {
+        fetch("http://127.0.0.1:8000/purchasemgmt/api/purchase-register-all/")
+            .then((res) => res.json())
+            .then((data) => setItems(data.data));
+    }, []);
+
     return (
 
         <div className="container mt-3">
@@ -76,7 +91,21 @@ const PurchaseRegister = () => {
 
                 </tr>
         </thead>
-        <tbody id="tbody"></tbody>
+        <tbody id="tbody">
+                {items.map((i, key) => (
+                    <tr key={key}>
+                        <td>{i.itemid}</td>
+                        <td>{i.itembarcode}</td>
+                        <td>{i.itemname}</td>
+                        <td>{i.itemqty}</td>
+                        <td>{i.itemmrp}</td>
+                        <td>{i.itempurrate}</td>
+                        <td>{i.itemsalerate}</td>
+                        <td>{i.id}</td>
+                        <td>{i.itemqty*i.itempurrate}</td>
+                    </tr>
+                ))}
+        </tbody>
         <tbody id="tbodyttl"></tbody>
 
   

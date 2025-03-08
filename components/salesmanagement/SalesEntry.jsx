@@ -1,20 +1,25 @@
 "use client";
 
+// Item Master Search by Name starts here:
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
 
 const SalesEntry = () => {
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
+    const business_id = 1;
+    const employee_master_id = 1;
 
     const fetchAllIitems = async () => {
         try {
-            const fetchedItemsResponse = await fetch(URL + 'main/item-master/'
-            );
+            const fetchedItemsResponse = await fetch(`${URL}api/item-master-search-by-name?business_id=${business_id}&employee_master_id=${employee_master_id}`);
             const fetchedItems = await fetchedItemsResponse.json();
+            console.log(fetchedItems);
+
             return fetchedItems.data;
         } catch(err) {
             console.log(err);
+            return [];
         }
     }
 
@@ -23,16 +28,19 @@ const SalesEntry = () => {
             console.log(fetchedItems);
             if(fetchedItems) {
                 setItems(fetchedItems);
+                // setFilteredItems(fetchedItems);
             }
         })
         
     }, [])
 
     const filterItems = (searchTerm) => {
-        
+        if(searchTerm === '') {
+            return []
+        }
         const regex = new RegExp(searchTerm, 'i');
         console.log(regex);
-        const filteredItems = items.filter(item => regex.test(item.itemname));
+        const filteredItems = items.filter(item => regex.test(item.item_name));
         return filteredItems;
     }
 
@@ -44,9 +52,25 @@ const SalesEntry = () => {
         setFilteredItems(filteredItems);
     }
 
-return (        
+//Sales Bill Pending View Starts Here:
+    //import { useEffect, useState } from "react";
+
+// const SalesBillPending = () => {
+    const [items_sales_bill_pending, setItems_sales_bill_pending] = useState([
+
+    ]);
+//     const business_id = 1;
+//     const employee_master_id = 1;
+
+    useEffect(() => {
+        fetch(`${URL}salesmgmt/api/sales-bill-pending?business_id=${business_id}&employee_master_id=${employee_master_id}`)
+            .then((res) => res.json())
+            .then((data) => setItems_sales_bill_pending(data.data));
+    }, []);
+
+return (
     <div className="container mt-3">
-    <h4 className="alert alert-info text-center mb-1 p-1">  SALES (SCAN POS) </h4>
+    <h4 className="alert alert-info text-center mb-1 p-1"> SALES (SCAN POS) </h4>
     <div className="row">
         <div className="col-sm-2">
         User: <br /><br />
@@ -89,7 +113,7 @@ return (
         <div className="col-sm-10 text-center">
         <div className="list-group" id="show-list">
             {filteredItems.map((item, key) => (
-                <li key={key} class="list-group-item list-group-item-action list-group-item-info">{item.itemname}</li>
+                <li key={key} className="list-group-item list-group-item-action list-group-item-info">{item.item_name}</li>
             ))}
         </div>
             <table className="table">
@@ -106,7 +130,22 @@ return (
                         <th scope="col">Action</th>
                     </tr>
             </thead>
-            <tbody id="tbody"></tbody>
+            <tbody id="tbody">
+                {items_sales_bill_pending.map((i, key) => (
+                    <tr key={key}>
+                        <td>{i.item_master_id}</td>
+                        <td>{i.item_barcode}</td>
+                        <td>{i.item_name}</td>
+                        <td>{i.item_mrp}</td>
+                        <td>{i.item_sale_rate}</td>
+                        <td>{i.item_qty}</td>
+                        <td>{i.item_gst}</td>
+                        <td>{i.item_qty*i.item_sale_rate}</td>
+                        <td>actions</td>
+                    </tr>
+                ))}
+                
+            </tbody>
 
     </table>
             
@@ -115,5 +154,6 @@ return (
     </div>
   )
 }
+
 
 export default SalesEntry

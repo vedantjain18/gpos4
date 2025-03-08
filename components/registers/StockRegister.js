@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 
 const StockRegisterALL = () => {
     const [items, setItems] = useState([
-        // {itembarcode: 1, itemname: "item1", itemqty: 10, itemmrp: 100, itempurrate: 90, itemsalerate: 110, itemtaxid: 10},
-        // {itembarcode: 2, itemname: "item2", itemqty: 20, itemmrp: 200, itempurrate: 190, itemsalerate: 210, itemtaxid: 20},
+
     ]);
 
+    const business_id = 1;
+
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/main/api/stock-register-all/")
+        fetch(`http://127.0.0.1:8000/inventorymgmt/api/stock-register-all?business_id=${business_id}`)
             .then((res) => res.json())
             .then((data) => setItems(data.data));
     }, []);
