@@ -1,5 +1,7 @@
 "use client";
 import "@/components/styles/loginstyles.css";
+import { setCokies } from "@/utils/cookieUtils";
+import { redirect } from "next/navigation";
 import { useState } from "react";
 
 const OwnerRegistration = () => {
@@ -25,7 +27,7 @@ const OwnerRegistration = () => {
         console.log(event.target);
         console.log(ownerData);
 
-        fetch('http://127.0.0.1:8000/create/api/owner-manage/', {
+        fetch('http://127.0.0.1:8000/api/v1/mastercreate/owner-manage/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,6 +37,9 @@ const OwnerRegistration = () => {
         .then(response => response.json())
         .then(data => {
           console.log(data);
+          // ookies.set('ownerId', data.data)
+          setCokies('ownerId', data.data)
+          redirect('/businessregistration')
         })
 
     }
@@ -44,6 +49,7 @@ const OwnerRegistration = () => {
     }
 
   return (
+    
     <div className="login">
     <h1>Owner Registration</h1>
     <form id="OwnerRegistrationForm" onSubmit={handleFormSubmit}>
@@ -51,8 +57,8 @@ const OwnerRegistration = () => {
         <input type="text" name="fullname" onChange={changeOwnerInputs} value={ownerData.fullname} placeholder="Name" id="FullName" minLength="3" maxLength="20" required />
         <input type="text" name="username" onChange={changeOwnerInputs} value={ownerData.username} placeholder="Choose A UserName" id="UserName" minLength="3" maxLength="20" required /><a href="./.html" className="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Check Availability</a>
         <br /><br />
-        <input type="password" name="password" onChange={changeOwnerInputs} value={ownerData.password} placeholder="Choose A Password" id="Password" minLength="9" maxLength="20" required /> {/*</br>*password should be atleast 9 characters long with one special character */}
-        <input type="password" name="password2" onChange={changeOwnerInputs} value={ownerData.password2} placeholder="Confirm Password" id="Password2" minLength="9" maxLength="20" required />
+        <input type="password" name="password" onChange={changeOwnerInputs} value={ownerData.password} placeholder="Choose A Password" id="Password" minLength="8" maxLength="20" required /> {/*</br>*password should be atleast 9 characters long with one special character */}
+        <input type="password" name="password2" onChange={changeOwnerInputs} value={ownerData.password2} placeholder="Confirm Password" id="Password2" minLength="8" maxLength="20" required />
         <input type="text" name="email" onChange={changeOwnerInputs} value={ownerData.email} placeholder="Email ID" id="Email" minLength="6" maxLength="30" required />
         <input type="text" name="mobile" onChange={changeOwnerInputs} value={ownerData.mobile} placeholder="Mobile Number (+91)" id="Mobile" minLength="10" maxLength="10" required />
         <input type="text" name="whatsapp" onChange={changeOwnerInputs} value={ownerData.whatsapp} placeholder="Whatsapp Number (If Any)" id="Whatsapp" minLength="10" maxLength="10" required />

@@ -4,7 +4,7 @@
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
 
-const SalesEntry = () => {
+const SalesOrder = () => {
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const business_id = 1;
@@ -70,7 +70,7 @@ const SalesEntry = () => {
 
 return (
     <div className="container mt-3">
-    <h4 className="alert alert-info text-center mb-1 p-1"> SALES (SCAN POS) </h4>
+    <h4 className="alert alert-info text-center mb-1 p-1"> SALES ORDER (SCAN POS) </h4>
     <div className="row">
         <div className="col-sm-2">
         User: <br /><br />
@@ -106,7 +106,7 @@ return (
                     <input type="text" className="form-control" id="dunzo" name="dunzo" placeholder="Dunzo"/>
                     <br /><b>Balance Return:</b>
                     <div id="msgchange"></div>
-                    <br /><button type="submit" className="btn btn-info" id="btnsave">SAVE BILL</button>
+                    <br /><button type="submit" className="btn btn-info" id="btnsave">SAVE ORDER</button>
                     <br /><br /><button type="submit" className="btn btn-info" id="TransferToOrder">To S. Order</button>
                     <br /><button type="submit" className="btn btn-info" id="TransferToQuotation">To S. Quotation</button>
                 </form>
@@ -160,4 +160,4 @@ return (
 }
 
 
-export default SalesEntry
+export default SalesOrder

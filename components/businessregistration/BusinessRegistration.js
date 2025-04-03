@@ -1,13 +1,16 @@
 
 "use client";
 import "@/components/styles/formstyles.css";
-import { useState } from "react";
+import { getCokies } from "@/utils/cookieUtils";
+import { setCokies } from "@/utils/cookieUtils";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const BusinessRegistration = () => {
+	// const [ownerId, setOownerId] = useState('');
 	const [BusinessData, setBusinessData] = useState({
 		OwnerId: "",
 		BusinessName: "",
-		UserName: "",
 		BusinessEmail: "",
 		BusinessMobile: "",
 		BusinessWhatsapp: "",
@@ -20,12 +23,16 @@ const BusinessRegistration = () => {
 		Country: "",
 		Gstin: ""
 	});
+
+	useEffect(() => {
+		const OwnerId = getCokies('ownerId')
+		setBusinessData({...BusinessData, OwnerId})
+	}, [])
 	
     function handleFormSubmit(event) {  
         event.preventDefault();
-      }
 
-	  fetch('http://127.0.0.1:8000/create/api/business-create/', {
+	  fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-create/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -35,6 +42,8 @@ const BusinessRegistration = () => {
 	.then(response => response.json())
 	.then(data => {
 	  console.log(data);
+	  	setCokies('businessId', data.data)
+		redirect('/storecreation')
 	})
 
 }
@@ -49,9 +58,9 @@ function changeBusinessInputs(e) {
             <form id="BusinessRegistrationForm" onSubmit={handleFormSubmit}>
 				
 				
-				<input type="text" name="OwnerId" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Owner Id" id="OwnerId" minLength="3" maxLength="20" required disabled />
+				<input type="text" name="OwnerId" value={BusinessData.OwnerId} placeholder="Owner Id" id="OwnerId" maxLength="20" required disabled />
                 <input type="text" name="BusinessName" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Name" id="BusinessName" minLength="3" maxLength="20" required />
-				<input type="text" name="UserName" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Choose A UserName" id="UserName" minLength="3" maxLength="20" required /><a href="./.html" className="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Check Availability</a>
+				
                 <br /><br /> 
 
 				<input type="text" name="BusinessEmail" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Email ID" id="BusinessEmail" minLength="6" maxLength="30" required />
@@ -69,7 +78,7 @@ function changeBusinessInputs(e) {
 				<div id="errors" className="error"></div>
                 <div id="success" className="success"></div>
 
-				<input type="submit" id="ContinueUserRegistration" value="Continue" />
+				<input type="submit" id="ContinueBusinessRegistration" value="Continue" />
                 
 			</form>
 		</div>

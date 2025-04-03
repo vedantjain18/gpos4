@@ -4,7 +4,7 @@
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
 
-const SalesEntry = () => {
+const SalesQuotation = () => {
     const [items, setItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const business_id = 1;
@@ -63,14 +63,14 @@ const SalesEntry = () => {
 //     const employee_master_id = 1;
 
     useEffect(() => {
-        fetch(`${URL}salesmgmt/api/sales-bill-pending?business_id=${business_id}&employee_master_id=${employee_master_id}`)
+        fetch(`${URL}salesmgmt/api/sales-quotation-pending?business_id=${business_id}&employee_master_id=${employee_master_id}`)
             .then((res) => res.json())
             .then((data) => setItems_sales_bill_pending(data.data));
     }, []);
 
 return (
     <div className="container mt-3">
-    <h4 className="alert alert-info text-center mb-1 p-1"> SALES (SCAN POS) </h4>
+    <h4 className="alert alert-info text-center mb-1 p-1"> SALES QUOTATION (SCAN POS) </h4>
     <div className="row">
         <div className="col-sm-2">
         User: <br /><br />
@@ -95,7 +95,7 @@ return (
                 </form>
             
                 <div className="col-sm-12">
-                Bill Total:<div id="billtotal"></div>
+                Payment Mode:<div id="billtotal"></div>
                 </div>
                 
                 <form className="col-sm-12" id="savebtn" method="post" action="">
@@ -104,9 +104,9 @@ return (
                     <input type="text" className="form-control" id="paytmsale" name="paytmsale" placeholder="PayTM Amount"/>
                     <input type="text" className="form-control" id="mopcreditsale" name="mopcreditsale" placeholder="Credit Sale"/>
                     <input type="text" className="form-control" id="dunzo" name="dunzo" placeholder="Dunzo"/>
-                    <br /><b>Balance Return:</b>
+                    <br /><b>Balance Due:</b>
                     <div id="msgchange"></div>
-                    <br /><button type="submit" className="btn btn-info" id="btnsave">SAVE BILL</button>
+                    <br /><button type="submit" className="btn btn-info" id="btnsave">SAVE QUOTATION</button>
                     <br /><br /><button type="submit" className="btn btn-info" id="TransferToOrder">To S. Order</button>
                     <br /><button type="submit" className="btn btn-info" id="TransferToQuotation">To S. Quotation</button>
                 </form>
@@ -160,4 +160,4 @@ return (
 }
 
 
-export default SalesEntry
+export default SalesQuotation
