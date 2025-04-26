@@ -29,7 +29,7 @@ const BusinessRegistration = () => {
 		setBusinessData({...BusinessData, OwnerId})
 	}, [])
 	
-    function handleFormSubmit(event) {  
+    function handleFormSubmit(event) {
         event.preventDefault();
 
 	  fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-create/', {
@@ -43,7 +43,7 @@ const BusinessRegistration = () => {
 	.then(data => {
 	  console.log(data);
 	  	setCokies('businessId', data.data)
-		redirect('/storecreation')
+		redirect('/businessregistration/storecreation')
 	})
 
 }
