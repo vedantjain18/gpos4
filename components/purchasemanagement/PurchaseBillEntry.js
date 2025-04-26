@@ -1,5 +1,49 @@
+'use client'
+import { getCokies } from "@/utils/cookieUtils"
+import { useEffect, useState } from "react"
 
 const PurchaseBillEntry = () => {
+
+    const [itemName, setItemName] = useState('')
+    const [filteredItems, setFilteredItems] = useState([])
+    const [items, setItems] = useState([])
+    const [selectedItem, setSelectedItem] = useState({})
+
+    useEffect(() => {
+        const businessId = getCokies('businessId')
+    fetch(`http://127.0.0.1:8000/api/v1/inventorymgmt/item-master?business_id=${businessId}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        setItems(data.data);
+        console.log(data);
+    })
+    }, [])
+
+    const filterItem = (itemName) => {
+        const value = itemName
+        setItemName(itemName)
+        if(value === '') {
+            setFilteredItems([])
+        } else {
+            const filtered = items.filter(item => item.item_name.toLowerCase().includes(value.toLowerCase()));
+            setFilteredItems(filtered)
+            return filtered
+        }
+    }
+
+    const handleItemClick = (itemName) => {
+        // setItemName(itemName)
+        const selectedItem = filterItem(itemName)
+        setSelectedItem(selectedItem[0])
+        setFilteredItems([])
+        console.log(selectedItem)
+    }
+
+    // useEffect(() => {
+    //     filterItem(itemName)
+    // }, [itemName])
+
     return (
 
         <div className="container mt-3">
@@ -16,8 +60,8 @@ const PurchaseBillEntry = () => {
                 <input type="text" className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
                 <div className="list-group" id="show-list"></div>
                 
-                <input type="text" className="form-control" id="distmob" name="distmob" placeholder="Dist Mobile" readonly/>
-                <input type="text" className="form-control" id="distgst" name="distgst" placeholder="Dist GST" readonly/>
+                <input type="text" className="form-control" id="distmob" name="distmob" placeholder="Dist Mobile" readOnly/>
+                <input type="text" className="form-control" id="distgst" name="distgst" placeholder="Dist GST" readOnly/>
 
 
                 <button type="submit" className="btn btn-info" id="distadd">Add Dist</button><br /><br />
@@ -33,8 +77,14 @@ const PurchaseBillEntry = () => {
             <form className="col-sm-12" id="subskuid" method="post" action="">
             <h6 className=" p-1"> Scan Items</h6>    
                 <input type="text" className="form-control" id="skuid" name="skuid" placeholder="Scan Barcode"/><br />
-                <input type="text" className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
-                <div className="list-group" id="show-list2"></div>
+                <input type="text" onChange={(e) => filterItem(e.target.value)} value={itemName} className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
+                <div className="list-group" id="show-list2">
+                    {filteredItems.map((item, index) => (
+                        <div key={index} className="list-group-item list-group-item-action" onClick={() => { handleItemClick(item.item_name) }}>
+                            {item.item_name}
+                        </div>
+                    ))}
+                </div>
 
                 <button type="submit" className="btn btn-info" id="btnadd">Add Item</button>
                 <div id="msg"></div>

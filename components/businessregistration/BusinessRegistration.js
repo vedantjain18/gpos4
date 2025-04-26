@@ -1,6 +1,6 @@
 
 "use client";
-import "@/components/styles/formstyles.css";
+import "@/components/styles/loginstyles.css";
 import { getCokies } from "@/utils/cookieUtils";
 import { setCokies } from "@/utils/cookieUtils";
 import { redirect } from "next/navigation";
@@ -32,7 +32,7 @@ const BusinessRegistration = () => {
     function handleFormSubmit(event) {
         event.preventDefault();
 
-	  fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-create/', {
+	  fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-master/', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -59,21 +59,21 @@ function changeBusinessInputs(e) {
 				
 				
 				<input type="text" name="OwnerId" value={BusinessData.OwnerId} placeholder="Owner Id" id="OwnerId" maxLength="20" required disabled />
-                <input type="text" name="BusinessName" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Name" id="BusinessName" minLength="3" maxLength="20" required />
+                <input type="text" name="BusinessName" onChange={changeBusinessInputs} value={BusinessData.BusinessName} placeholder="Business Name" id="BusinessName" minLength="3" maxLength="20" required />
 				
                 <br /><br /> 
 
-				<input type="text" name="BusinessEmail" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Email ID" id="BusinessEmail" minLength="6" maxLength="30" required />
-				<input type="text" name="BusinessMobile" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Mobile Number (+91)" id="BusinessMobile" minLength="10" maxLength="10" required />
-				<input type="text" name="BusinessWhatsapp" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Whatsapp Number (If Any)" id="BusinessWhatsapp" minLength="10" maxLength="10" required />
-				<input type="text" name="BusinessAddress1" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Address Line 1" id="BusinessAddress1" minLength="3" maxLength="60" required />
-				<input type="text" name="BusinessAddress2" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Business Address Line 2" id="BusinessAddress2" minLength="0" maxLength="60" required />
-				<input type="text" name="City" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="City" id="City" minLength="3" maxLength="20" required />
-				<input type="text" name="Pincode" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Pincode" id="Pincode" minLength="3" maxLength="6" required />
-				<input type="text" name="District" placeholder="District" id="District" minLength="3" maxLength="30" required />
-				<input type="text" name="State" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="State" id="Country" minLength="3" maxLength="20" required />
-				<input type="text" name="Country" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Country" id="Country" minLength="3" maxLength="20" required />
-                <input type="text" name="Gstin" onChange={changeBusinessInputs} value={BusinessData.fullname} placeholder="Registered GSTIN" id="Gstin" minLength="15" maxLength="15" required />
+				<input type="text" name="BusinessEmail" onChange={changeBusinessInputs} value={BusinessData.BusinessEmail} placeholder="Business Email ID" id="BusinessEmail" minLength="6" maxLength="30" required />
+				<input type="text" name="BusinessMobile" onChange={changeBusinessInputs} value={BusinessData.BusinessMobile} placeholder="Business Mobile Number (+91)" id="BusinessMobile" minLength="10" maxLength="10" required />
+				<input type="text" name="BusinessWhatsapp" onChange={changeBusinessInputs} value={BusinessData.BusinessWhatsapp} placeholder="Business Whatsapp Number (If Any)" id="BusinessWhatsapp" minLength="10" maxLength="10" required />
+				<input type="text" name="BusinessAddress1" onChange={changeBusinessInputs} value={BusinessData.BusinessAddress1} placeholder="Business Address Line 1" id="BusinessAddress1" minLength="3" maxLength="60" required />
+				<input type="text" name="BusinessAddress2" onChange={changeBusinessInputs} value={BusinessData.BusinessAddress2} placeholder="Business Address Line 2" id="BusinessAddress2" minLength="0" maxLength="60" required />
+				<input type="text" name="City" onChange={changeBusinessInputs} value={BusinessData.City} placeholder="City" id="City" minLength="3" maxLength="20" required />
+				<input type="text" name="Pincode" onChange={changeBusinessInputs} value={BusinessData.Pincode} placeholder="Pincode" id="Pincode" minLength="3" maxLength="6" required />
+				<input type="text" name="District" onChange={changeBusinessInputs} value={BusinessData.District} placeholder="District" id="District" minLength="3" maxLength="30" required />
+				<input type="text" name="State" onChange={changeBusinessInputs} value={BusinessData.State} placeholder="State" id="State" minLength="3" maxLength="20" required />
+				<input type="text" name="Country" onChange={changeBusinessInputs} value={BusinessData.Country} placeholder="Country" id="Country" minLength="3" maxLength="20" required />
+                <input type="text" name="Gstin" onChange={changeBusinessInputs} value={BusinessData.Gstin} placeholder="Registered GSTIN" id="Gstin" minLength="15" maxLength="15" required />
 
 				<div id="errors" className="error"></div>
                 <div id="success" className="success"></div>

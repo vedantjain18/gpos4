@@ -13,8 +13,8 @@ const CreateItemMaster = () => {
                 <h5 className="text-center mb-4">Create Item</h5>
                 <form className="form-card" onsubmit="event.preventDefault()">
                     <div className="row justify-content-between text-left">
-                        <div className="form-group col-sm-6 flex-column d-flex"> <label className="form-control-label px-3">Item Name<span className="text-danger"> *</span></label> <input type="text" id="ItemName" name="ItemName" placeholder="Enter your first name" onBlur="validate(1)" /> </div>
-                        <div className="form-group col-sm-6 flex-column d-flex"> <label className="form-control-label px-3">Item Print name<span className="text-danger"> *</span></label> <input type="text" id="ItemPrintName" name="ItemPrintName" placeholder="Enter your last name" onBlur="validate(2)" /> </div>
+                        <div className="form-group col-sm-6 flex-column d-flex"> <label className="form-control-label px-3">Item Name<span className="text-danger"> *</span></label> <input type="text" id="ItemName" name="ItemName" placeholder="Item Name" onBlur="validate(1)" /> </div>
+                        <div className="form-group col-sm-6 flex-column d-flex"> <label className="form-control-label px-3">Item Print name<span className="text-danger"> *</span></label> <input type="text" id="ItemPrintName" name="ItemPrintName" placeholder="Item Print Name" onBlur="validate(2)" /> </div>
                     </div>
                     <div className="row justify-content-between text-left">
                         <div className="form-group col-sm-4 flex-column d-flex"> <label className="form-control-label px-3">Item Category<span className="text-danger"> * <a href="" rel="noreferrer">Create Category</a></span></label> <input type="text" id="ItemCategoryId" name="ItemCategoryId" placeholder="Item Category" onBlur="validate(3)" /> </div>
