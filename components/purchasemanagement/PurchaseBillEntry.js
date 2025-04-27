@@ -15,7 +15,7 @@ const PurchaseBillEntry = () => {
     const [items, setItems] = useState([])
     const [selectedItem, setSelectedItem] = useState({})
 
-    const [purchasePending, setPurchasePending] = useState({})
+    const [purchasePending, setPurchasePending] = useState(null)
 
     useEffect(() => {
         const businessId = getCokies('businessId')
@@ -26,46 +26,66 @@ const PurchaseBillEntry = () => {
             setItems(data.data);
             console.log(data);
         })
+
+        axiosInstance.get(`/inventorymgmt/account-master?business_id=${businessId}`)
+        .then(response => response.data)
+        .then(data => {
+            console.log(data)
+            setItems(data.data);
+            console.log(data);
+        })
     }, [])
 
-    const handleDistChange = (e) => {
-        const value = e.target.value;
-        setDistname(value)
-    }
-
     const filterItem = (itemName) => {
-        const value = itemName
         setItemName(itemName)
-        if(value === '') {
+        if(itemName === '') {
             setFilteredItems([])
         } else {
-            const filtered = items.filter(item => item.item_name.toLowerCase().includes(value.toLowerCase()));
+            const filtered = items.filter(item => item.item_name.toLowerCase().includes(itemName.toLowerCase()));
             setFilteredItems(filtered)
             return filtered
         }
     }
 
     const handleItemClick = (itemName) => {
-        // setItemName(itemName)
         const selectedItem = filterItem(itemName)
         setSelectedItem(selectedItem[0])
         setFilteredItems([])
         console.log(selectedItem)
     }
 
-    const handleDistClick = (distName) => {
-        const selectedDist = filterItem(itemName)
-        setSelectedItem(selectedItem[0])
-        setFilteredItems([])
-        console.log(selectedItem)
+    const filterDist = (distName) => {
+        setDistname(distName)
+        if(distName === '') {
+            setFilteredDists([])
+        } else {
+            const filtDists = dists.filter(dist => dist.acc_name.toLowerCase().includes(distName.toLowerCase()));
+            setFilteredDists(filtDists)
+            return filtDists
+        }
     }
 
-    const handleAddItem = () => {
-        const {item_tax_container_id, id, item_name} = selectedIitem;
+    const handleDistClick = (distName) => {
+        const selectedDist = filterDist(distName)
+        setSelectedDist(selectedDist[0])
+        setFilteredDists([])
+        console.log(selectedDist)
+    }
+
+    const handleAddPurhase = () => {
+        const {item_tax_container_id, id, item_name} = selectedItem;
+        const { id: distId } = selectedDist;
+        const businessId = getCokies('businessId')
+        const employeeId = getCokies('employeeId')
+        
         axiosInstance.post('/purchasemgmt/purchase-invoice-pending/', {
-            item_tax_container_id: item_tax_container_id,
-            item_master_id: id,
-            item_name: item_name,
+            businessId,
+            itemTaxContainerId: item_tax_container_id,
+            itemMasterId: id,
+            itemName: item_name,
+            distId,
+            employeeId,
+
         })
         .then(response => response.data)
         .then(data => {
@@ -88,9 +108,9 @@ const PurchaseBillEntry = () => {
             <form className="col-sm-12" id="distinfo" method="post" action="">
 
                 <input type="text" className="form-control" id="distid" name="distid" placeholder="Dist ID"/>
-                <input type="text" onChange={handleDistChange} value={distName} className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
+                <input type="text" onChange={(e) => filterDist(e.target.value)} value={distName} className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
                 <div className="list-group" id="show-list">
-                {filteredDists.map((dist, index) => (
+                {filteredDists && filteredDists.map((dist, index) => (
                         <div key={index} className="list-group-item list-group-item-action" onClick={() => { handleDistClick(dist.acc_name) }}>
                             {dist.acc_name}
                         </div>
@@ -111,12 +131,12 @@ const PurchaseBillEntry = () => {
 
 
 
-            <form className="col-sm-12" id="subskuid" onSubmit={handleAaddIitem}>
+            <form className="col-sm-12" id="subskuid" onSubmit={handleAddPurhase}>
             <h6 className=" p-1"> Scan Items</h6>    
                 <input type="text" className="form-control" id="skuid" name="skuid" placeholder="Scan Barcode"/><br />
                 <input type="text" onChange={(e) => filterItem(e.target.value)} value={itemName} className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
                 <div className="list-group" id="show-list2">
-                    {filteredItems.map((item, index) => (
+                    {filteredItems && filteredItems.map((item, index) => (
                         <div key={index} className="list-group-item list-group-item-action" onClick={() => { handleItemClick(item.item_name) }}>
                             {item.item_name}
                         </div>
@@ -163,20 +183,14 @@ const PurchaseBillEntry = () => {
                 </tr>
             </thead>
             <tbody id="tbody">
-            {purchasePending.map(item => (
+            {purchasePending && (
                 <tr>
-                    <td scope="col">S.No.</td>
-                    <td scope="col">Barcode</td>
-                    <td scope="col">Product Name</td>
-                    <td scope="col">MRP</td>
-                    <td scope="col">Quantity</td>
-                    <td scope="col">PurRate</td>
-                    <td scope="col">SaleRate</td>
-                    <td scope="col">GST</td>
-                    <td scope="col">Amount</td>
-                    <td scope="col">Action</td>
+                {Object.keys(purchasePending).map((objKeys, key) => (
+                    <td key={key} scope="col">{purchasePending[objKeys]}</td>
+                ))}
+                <td><button className="btn btn-secondary" id="btndelete">Delete</button></td>
                 </tr>
-            ))}
+            )}
             </tbody>
         </table>
         
