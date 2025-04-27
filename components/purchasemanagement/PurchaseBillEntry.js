@@ -15,6 +15,8 @@ const PurchaseBillEntry = () => {
     const [items, setItems] = useState([])
     const [selectedItem, setSelectedItem] = useState({})
 
+    const [purchaseBillNo, setPurchaseBillNo] = useState('')
+    const [purchaseBillDate, setPurchaseBillDate] = useState('')
     const [purchasePending, setPurchasePending] = useState(null)
 
     useEffect(() => {
@@ -27,11 +29,11 @@ const PurchaseBillEntry = () => {
             console.log(data);
         })
 
-        axiosInstance.get(`/inventorymgmt/account-master?business_id=${businessId}`)
+        axiosInstance.get(`/accounts/accounts-master?business_id=${businessId}`)
         .then(response => response.data)
         .then(data => {
             console.log(data)
-            setItems(data.data);
+            setDists(data.data);
             console.log(data);
         })
     }, [])
@@ -72,25 +74,32 @@ const PurchaseBillEntry = () => {
         console.log(selectedDist)
     }
 
-    const handleAddPurhase = () => {
-        const {item_tax_container_id, id, item_name} = selectedItem;
+    const handleAddPurhase = (e) => {
+        e.preventDefault()
+        const {item_tax_container_id, id: itemId, item_name} = selectedItem;
         const { id: distId } = selectedDist;
         const businessId = getCokies('businessId')
         const employeeId = getCokies('employeeId')
+        const locationMasterId = getCokies('locationMasterId')
         
         axiosInstance.post('/purchasemgmt/purchase-invoice-pending/', {
             businessId,
-            itemTaxContainerId: item_tax_container_id,
-            itemMasterId: id,
+            locationMasterId,
+            purchaseBillNo,
+            purchaseBillDate,
+            accountId: distId,
+            itemMasterId: itemId,
             itemName: item_name,
-            distId,
-            employeeId,
-
+            // itemBarcode
+            // itemChildBarcode
+            itemChildSalesQty: 1,
+            itemTaxId: item_tax_container_id,
+            createdBy: employeeId
         })
         .then(response => response.data)
         .then(data => {
             console.log(data)
-            setPurchasePending(data);
+            setPurchasePending(data.data);
         })
         .catch(err => console.log(err))
     }
@@ -107,7 +116,7 @@ const PurchaseBillEntry = () => {
             </form><br />
             <form className="col-sm-12" id="distinfo" method="post" action="">
 
-                <input type="text" className="form-control" id="distid" name="distid" placeholder="Dist ID"/>
+                <input type="text" className="form-control" value={selectedDist.id} id="distid" name="distid" placeholder="Dist ID"/>
                 <input type="text" onChange={(e) => filterDist(e.target.value)} value={distName} className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
                 <div className="list-group" id="show-list">
                 {filteredDists && filteredDists.map((dist, index) => (
@@ -117,13 +126,13 @@ const PurchaseBillEntry = () => {
                     ))}
                 </div>
                 
-                <input type="text" className="form-control" id="distmob" name="distmob" placeholder="Dist Mobile" readOnly/>
-                <input type="text" className="form-control" id="distgst" name="distgst" placeholder="Dist GST" readOnly/>
+                <input type="text" className="form-control" id="distmob" value={selectedDist.acc_mob} name="distmob" placeholder="Dist Mobile" readOnly/>
+                <input type="text" className="form-control" id="distgst" value={selectedDist.acc_gstin} name="distgst" placeholder="Dist GST" readOnly/>
 
 
                 <button type="submit" className="btn btn-info" id="distadd">Add Dist</button><br /><br />
-                <input type="text" className="form-control" id="purbillno" name="purbillno" placeholder="Bill No." required/>
-                <input type="date" className="form-control" id="datePicker" name="purdate" min="2021-04-01" max="2022-03-31" required/>
+                <input type="text" className="form-control" value={purchaseBillNo} onChange={(e) => setPurchaseBillNo(e.target.value)} id="purbillno" name="purbillno" placeholder="Bill No." required/>
+                <input type="date" className="form-control" value={purchaseBillDate} onChange={(e) => setPurchaseBillDate(e.target.value)} id="datePicker" name="purdate" min="2021-04-01" max="2022-03-31" required/>
 
                 <div id="msgcstr"></div>
 
@@ -131,7 +140,7 @@ const PurchaseBillEntry = () => {
 
 
 
-            <form className="col-sm-12" id="subskuid" onSubmit={handleAddPurhase}>
+            <form className="col-sm-12" id="subskuid">
             <h6 className=" p-1"> Scan Items</h6>    
                 <input type="text" className="form-control" id="skuid" name="skuid" placeholder="Scan Barcode"/><br />
                 <input type="text" onChange={(e) => filterItem(e.target.value)} value={itemName} className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
@@ -143,7 +152,7 @@ const PurchaseBillEntry = () => {
                     ))}
                 </div>
 
-                <button type="submit" className="btn btn-info" id="btnadd">Add Item</button>
+                <button type="submit" onClick={handleAddPurhase} className="btn btn-info" id="btnadd">Add Item</button>
                 <div id="msg"></div>
             </form><br />
 
