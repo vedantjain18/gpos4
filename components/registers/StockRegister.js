@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import axiosInstance from "../../utils/apiUtils";
 
 const StockRegisterALL = () => {
     const [items, setItems] = useState([
@@ -10,7 +11,8 @@ const StockRegisterALL = () => {
     const business_id = 1;
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/inventorymgmt/api/stock-register-all?business_id=${business_id}`)
+        // fetch(`http://127.0.0.1:8000/inventorymgmt/api/stock-register-all?business_id=${business_id}`)
+        axiosInstance.get(`/inventorymgmt/stock-register-all?business_id=${business_id}/`)
             .then((res) => res.json())
             .then((data) => setItems(data.data));
     }, []);

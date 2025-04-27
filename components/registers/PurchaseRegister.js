@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import axiosInstance from "../../utils/apiUtils";
 
 const PurchaseRegister = () => {
     const [items, setItems] = useState([
@@ -10,7 +11,8 @@ const PurchaseRegister = () => {
     ]);
 
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/purchasemgmt/api/purchase-register-all/")
+        // fetch("http://127.0.0.1:8000/purchasemgmt/api/purchase-register-all/")
+        axiosInstance.get('/purchasemgmt/purchase-register-all/')
             .then((res) => res.json())
             .then((data) => setItems(data.data));
     }, []);

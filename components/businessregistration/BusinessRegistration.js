@@ -5,6 +5,7 @@ import { getCokies } from "@/utils/cookieUtils";
 import { setCokies } from "@/utils/cookieUtils";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import axiosInstance from "../../utils/apiUtils";
 
 const BusinessRegistration = () => {
 	// const [ownerId, setOownerId] = useState('');
@@ -32,21 +33,22 @@ const BusinessRegistration = () => {
     function handleFormSubmit(event) {
         event.preventDefault();
 
-	  fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-master/', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify(BusinessData),
-	})
-	.then(response => response.json())
-	.then(data => {
-	  console.log(data);
-	  	setCokies('businessId', data.data)
-		redirect('/businessregistration/storecreation')
-	})
-
-}
+		// fetch('http://127.0.0.1:8000/api/v1/mastercreate/business-master/', {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 	},
+		// 	body: JSON.stringify(BusinessData),
+		// })
+		
+		axiosInstance.post('/mastercreate/business-master/', BusinessData)
+		.then(response => response.json())
+		.then(data => {
+		console.log(data);
+			setCokies('businessId', data.data)
+			redirect('/businessregistration/storecreation')
+		})
+	}
 
 function changeBusinessInputs(e) {
 	setBusinessData({...BusinessData, [e.target.name]:e.target.value})

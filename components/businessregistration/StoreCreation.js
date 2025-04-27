@@ -4,6 +4,7 @@
 import { getCokies } from "@/utils/cookieUtils";
 import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
+import axiosInstance from "../../utils/apiUtils";
 
 const StoreCreation = () => {
     // const [ownerId, setOownerId] = useState('');
@@ -53,7 +54,8 @@ const StoreCreation = () => {
 
     const fetchCentralLocationTypes = () => {
         console.log("fetchCentralLocationTypes")
-        fetch('http://127.0.0.1:8000/api/v1/main/central-location-type/')
+        // fetch('http://127.0.0.1:8000/api/v1/main/central-location-type/')
+        axiosInstance.get('/main/central-location-type')
         .then(response => response.json())
         .then(data => {
             console.log(data)
@@ -66,13 +68,14 @@ const StoreCreation = () => {
     function handleFormSubmit(event) {
         event.preventDefault();
         setLocationData({...LocationData, OwnerId})
-        fetch('http://127.0.0.1:8000/api/v1/mastercreate/location-master/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(LocationData),
-        })
+        // fetch('http://127.0.0.1:8000/api/v1/mastercreate/location-master/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(LocationData),
+        // })
+        axiosInstance.post('/mastercreate/location-master/', LocationData)
         .then(response => response.json())
         .then(data => {
             console.log(data);

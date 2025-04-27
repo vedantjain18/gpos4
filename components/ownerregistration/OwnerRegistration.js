@@ -3,6 +3,7 @@ import "@/components/styles/loginstyles.css";
 import { setCokies } from "@/utils/cookieUtils";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import axiosInstance from "../../utils/apiUtils";
 
 const OwnerRegistration = () => {
     const [ownerData, setOwnerData] = useState({
@@ -27,13 +28,14 @@ const OwnerRegistration = () => {
         console.log(event.target);
         console.log(ownerData);
 
-        fetch('http://127.0.0.1:8000/api/v1/mastercreate/owner-master/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(ownerData),
-        })
+        // fetch('http://127.0.0.1:8000/api/v1/mastercreate/owner-master/', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(ownerData),
+        // })
+        axiosInstance.post('/mastercreate/owner-master/', ownerData)
         .then(response => response.json())
         .then(data => {
           console.log(data);

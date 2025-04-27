@@ -3,6 +3,7 @@
 // Item Master Search by Name starts here:
 import { URL } from '@/utils/config';
 import { useState, useEffect } from 'react';
+import axiosInstance from "../../utils/apiUtils";
 
 const SalesEntry = () => {
     const [items, setItems] = useState([]);
@@ -12,7 +13,7 @@ const SalesEntry = () => {
 
     const fetchAllIitems = async () => {
         try {
-            const fetchedItemsResponse = await fetch(`${URL}api/item-master-search-by-name?business_id=${business_id}&employee_master_id=${employee_master_id}`);
+            const fetchedItemsResponse = await axiosInstance.get(`/salesmgmt/item-master-search-by-name?business_id=${business_id}&employee_master_id=${employee_master_id}`);
             const fetchedItems = await fetchedItemsResponse.json();
             console.log(fetchedItems);
 
@@ -63,7 +64,7 @@ const SalesEntry = () => {
 //     const employee_master_id = 1;
 
     useEffect(() => {
-        fetch(`${URL}salesmgmt/api/sales-bill-pending?business_id=${business_id}&employee_master_id=${employee_master_id}`)
+        axiosInstance.get(`/salesmgmt/sales-bill-pending?business_id=${business_id}&employee_master_id=${employee_master_id}`)
             .then((res) => res.json())
             .then((data) => setItems_sales_bill_pending(data.data));
     }, []);

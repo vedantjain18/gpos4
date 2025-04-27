@@ -2,6 +2,7 @@
 
 import { URL } from '@/utils/config';
 import { useEffect, useState } from "react";
+import axiosInstance from "../../utils/apiUtils";
 
 const SalesReturnBillPending = () => {
     const [SalesReturnBillPending, setSalesReturnBillPending] = useState([
@@ -12,7 +13,7 @@ const SalesReturnBillPending = () => {
     const employee_master_id = 1;
 
     useEffect(() => {
-        fetch(`${URL}salesmgmt/api/sales-return-bill-pending/?business_id=${business_id}?employee_master_id=${employee_master_id}`)
+        axiosInstance.get(`/salesmgmt/api/sales-return-bill-pending/?business_id=${business_id}?employee_master_id=${employee_master_id}`)
             .then((res) => res.json())
             .then((data) => setSalesReturnBillPending(data.data));
     }, []);

@@ -1,24 +1,37 @@
 'use client'
 import { getCokies } from "@/utils/cookieUtils"
 import { useEffect, useState } from "react"
+import axiosInstance from "../../utils/apiUtils";
 
 const PurchaseBillEntry = () => {
+
+    const [distName, setDistname] = useState('')
+    const [filteredDists, setFilteredDists] = useState([])
+    const [dists, setDists] = useState([])
+    const [selectedDist, setSelectedDist] = useState({})
 
     const [itemName, setItemName] = useState('')
     const [filteredItems, setFilteredItems] = useState([])
     const [items, setItems] = useState([])
     const [selectedItem, setSelectedItem] = useState({})
 
+    const [purchasePending, setPurchasePending] = useState({})
+
     useEffect(() => {
         const businessId = getCokies('businessId')
-    fetch(`http://127.0.0.1:8000/api/v1/inventorymgmt/item-master?business_id=${businessId}`)
-    .then(response => response.json())
-    .then(data => {
-        console.log(data)
-        setItems(data.data);
-        console.log(data);
-    })
+        axiosInstance.get(`/inventorymgmt/item-master?business_id=${businessId}`)
+        .then(response => response.data)
+        .then(data => {
+            console.log(data)
+            setItems(data.data);
+            console.log(data);
+        })
     }, [])
+
+    const handleDistChange = (e) => {
+        const value = e.target.value;
+        setDistname(value)
+    }
 
     const filterItem = (itemName) => {
         const value = itemName
@@ -40,25 +53,49 @@ const PurchaseBillEntry = () => {
         console.log(selectedItem)
     }
 
-    // useEffect(() => {
-    //     filterItem(itemName)
-    // }, [itemName])
+    const handleDistClick = (distName) => {
+        const selectedDist = filterItem(itemName)
+        setSelectedItem(selectedItem[0])
+        setFilteredItems([])
+        console.log(selectedItem)
+    }
+
+    const handleAddItem = () => {
+        const {item_tax_container_id, id, item_name} = selectedIitem;
+        axiosInstance.post('/purchasemgmt/purchase-invoice-pending/', {
+            item_tax_container_id: item_tax_container_id,
+            item_master_id: id,
+            item_name: item_name,
+        })
+        .then(response => response.data)
+        .then(data => {
+            console.log(data)
+            setPurchasePending(data);
+        })
+        .catch(err => console.log(err))
+    }
 
     return (
 
         <div className="container mt-3">
-    <h4 className="alert alert-info text-center mb-1 p-1"> Purchase (SCAN POS) </h4>
-    <div className="row">
-    <div className="col-sm-2">
-    <form className="" id="logout" method="post" action="../loginauth/logout.php">
-                User: 
+            <h4 className="alert alert-info text-center mb-1 p-1"> Purchase (SCAN POS) </h4>
+            <div className="row">
+            <div className="col-sm-2">
+            <form className="" id="logout" method="post" action="../loginauth/logout.php">
+                User:
 
             </form><br />
             <form className="col-sm-12" id="distinfo" method="post" action="">
 
                 <input type="text" className="form-control" id="distid" name="distid" placeholder="Dist ID"/>
-                <input type="text" className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
-                <div className="list-group" id="show-list"></div>
+                <input type="text" onChange={handleDistChange} value={distName} className="form-control" id="distname" name="distname" placeholder="Dist Name" required/>
+                <div className="list-group" id="show-list">
+                {filteredDists.map((dist, index) => (
+                        <div key={index} className="list-group-item list-group-item-action" onClick={() => { handleDistClick(dist.acc_name) }}>
+                            {dist.acc_name}
+                        </div>
+                    ))}
+                </div>
                 
                 <input type="text" className="form-control" id="distmob" name="distmob" placeholder="Dist Mobile" readOnly/>
                 <input type="text" className="form-control" id="distgst" name="distgst" placeholder="Dist GST" readOnly/>
@@ -74,7 +111,7 @@ const PurchaseBillEntry = () => {
 
 
 
-            <form className="col-sm-12" id="subskuid" method="post" action="">
+            <form className="col-sm-12" id="subskuid" onSubmit={handleAaddIitem}>
             <h6 className=" p-1"> Scan Items</h6>    
                 <input type="text" className="form-control" id="skuid" name="skuid" placeholder="Scan Barcode"/><br />
                 <input type="text" onChange={(e) => filterItem(e.target.value)} value={itemName} className="form-control" id="namesearch" name="namesearch" placeholder="Search Name"/>
@@ -123,10 +160,24 @@ const PurchaseBillEntry = () => {
                     <th scope="col">GST</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Action</th>
-
                 </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
+            </thead>
+            <tbody id="tbody">
+            {purchasePending.map(item => (
+                <tr>
+                    <td scope="col">S.No.</td>
+                    <td scope="col">Barcode</td>
+                    <td scope="col">Product Name</td>
+                    <td scope="col">MRP</td>
+                    <td scope="col">Quantity</td>
+                    <td scope="col">PurRate</td>
+                    <td scope="col">SaleRate</td>
+                    <td scope="col">GST</td>
+                    <td scope="col">Amount</td>
+                    <td scope="col">Action</td>
+                </tr>
+            ))}
+            </tbody>
         </table>
         
         </div>
