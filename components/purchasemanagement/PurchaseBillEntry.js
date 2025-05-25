@@ -19,6 +19,9 @@ const PurchaseBillEntry = () => {
     const [purchaseBillDate, setPurchaseBillDate] = useState('')
     const [purchasePending, setPurchasePending] = useState([])
 
+    const [dataUpdated, setDataUpdated] = useState(false);
+    const [gstSymbols, setGstSymbols] = useState([]);
+
     useEffect(() => {
         const businessId = getCokies('businessId')
         const employeeId = getCokies('employeeId')
@@ -38,7 +41,6 @@ const PurchaseBillEntry = () => {
             setDists(data.data);
         })
 
-        // Get previous Purchase Pending entries
         axiosInstance.get(`/purchasemgmt/purchase-invoice-pending?business_id=${businessId}&employee_master_id=${employeeId}`)
         .then(response => response.data)
         .then(data => {
@@ -46,7 +48,26 @@ const PurchaseBillEntry = () => {
             setPurchasePending(data.data);
         })
 
+        axiosInstance.get(`/main/item-tax-master?business_id=${businessId}`)
+        .then(response => response.data)
+        .then(data => {
+            console.log("/main/item-tax-master", data)
+            setGstSymbols(data.data)
+        })
+        .catch(err => console.log("Error fetching: /main/item-tax-master", err))
+
     }, [])
+
+    useEffect(() => {
+        const businessId = getCokies('businessId')
+        const employeeId = getCokies('employeeId')
+        axiosInstance.get(`/purchasemgmt/purchase-invoice-pending?business_id=${businessId}&employee_master_id=${employeeId}`)
+        .then(response => response.data)
+        .then(data => {
+            console.log(data)
+            setPurchasePending(data.data);
+        })
+    }, [dataUpdated])
 
     const filterItem = (itemName) => {
         setItemName(itemName)
@@ -111,11 +132,11 @@ const PurchaseBillEntry = () => {
             )
             .then((data) => {
                 console.log("Field updated:", data);
+                setDataUpdated(!dataUpdated)
                 const updatedItem = data.data;
-                const updatedPurchasePending = purchasePending.map((item) =>
-                    item.id === updatedItem.id ? updatedItem : item
+                setPurchasePending((prev) =>
+                    prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
                 );
-                setPurchasePending(updatedPurchasePending);
             })
             .catch((err) => console.error("Update error:", err));
         } else {
@@ -133,58 +154,90 @@ const PurchaseBillEntry = () => {
             })
             .then(response => response.data)
             .then(data => {
-                console.log(data)
-                const updatedPurchasePending = purchasePending.map((item) =>
-                    item.id === data.data.id ? data.data : item
-                );
-                setPurchasePending(updatedPurchasePending);
+                console.log("Item Added", data)
+                setDataUpdated(!dataUpdated)
+                const updatedItem = data.data;
+                setPurchasePending((prev) => [...prev, updatedItem]);
             })
             .catch(err => console.log(err))
         }
     }
 
     const handleRowChange = async (e, id, field) => {
-        const value = e.target?.innerText?.trim();
-        console.log("handleRowChange", value, id, field);
+        const valueRaw = e.target?.innerText?.trim();
+        let value = valueRaw;
         
+        let prevValue;
+        setPurchasePending((prev) => {
+            const updated = prev.map((row) => {
+                if (row.id === id) {
+                    // Deep clone if it's an object
+                    prevValue = typeof row[field] === "object" && row[field] !== null
+                        ? JSON.parse(JSON.stringify(row[field]))
+                        : row[field];
 
-        setPurchasePending((prev) =>
-            prev.map((row) =>
-                row.id === id ? { ...row, [field]: value } : row
-            )
-        );
+                    return { ...row, [field]: value };
+                }
+                return row;
+            });
+            return updated;
+        });
 
-        console.log("purchasePending", purchasePending);
-        
+        if (field === "item_tax_id") {
+            const newGstSymbol = gstSymbols.find(gstSymbol => gstSymbol.item_tax_symbol === valueRaw);
+            
+            if (!newGstSymbol) {
+                console.warn("Invalid GST symbol:", valueRaw);
+                // Revert back if invalid GST
+                setPurchasePending((prev) =>
+                    prev.map((row) =>
+                        row.id === id ? { ...row, [field]: prevValue } : row
+                    )
+                );
+                return;
+            }
 
-        axiosInstance.patch('/purchasemgmt/purchase-invoice-pending/', 
-            JSON.stringify({
-                id,
-                field,
-                value,
-            })
-        )
-        // .then((res) => res.json())
-        .then((data) => {
-            console.log("Field updated:", data);
+            value = newGstSymbol;
+        } else if (!isNaN(valueRaw) && valueRaw !== "") {
+            value = parseFloat(valueRaw).toFixed(2);
+        }
+
+        axiosInstance.patch('/purchasemgmt/purchase-invoice-pending/', {
+            id,
+            field,
+            value,
         })
-        .catch((err) => console.error("Update error:", err));
+        .then(response => {
+            console.log("Field updated:", response.data);
+        })
+        .catch(err => {
+            console.error("Update error:", err);
+            setPurchasePending((prev) =>
+                prev.map((row) =>
+                    row.id === id ? { ...row, [field]: prevValue } : row
+                )
+            );
+        });
     };
 
-    const handleGstChange = (e, p) => {
-        const newGST = e.target.innerText;
-        const updatedRow = {
-            ...p,
-            item_tax_id: {
-                ...p.item_tax_id,
-                item_tax_symbol: newGST,
-            },
-        };
-        setPurchasePending((prev) =>
-            prev.map((row) =>
-                row.id === p.id ? updatedRow : row
-            )
-        );
+    const handleDelete = (e, id) => {
+        console.log("handleDelete", id)
+        axiosInstance.delete(`/purchasemgmt/purchase-invoice-pending/`, { data: { id } })
+        .then(data => {
+            console.log("handleDelete:", data)
+            setDataUpdated(!dataUpdated)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    const handlePurchaseSave = (e) => {
+        e.preventDefault()
+        // POST: /purchase-invoice-register
+        // POST: /purchase-invoice-register-details
+        // POST: /stock-register
+        // DELETE: /purchase-invoice-pending
     }
 
     return (
@@ -244,17 +297,19 @@ const PurchaseBillEntry = () => {
             <div id="gsttotal"></div>
             Bill Total:
             <div id="billtotal"></div>
+            Net Amount:
+            <div id="netamount"></div>
             
             </div><br />
 
-            <form className="col-sm-12" id="savebtn" method="post" action="">
+            <form className="col-sm-12" id="chargeForm">
                 <input type="text" className="form-control" id="othrchrgs" name="othrchrgs" placeholder="Other Charges[->(-)GST]"/>
                 <input type="text" className="form-control" id="othrdis" name="othrdis" placeholder="Other Discounts[->(-)GST]"/>
                 <input type="text" className="form-control" id="othrchrgs" name="othrchrgs" placeholder="Other Charges->Ledger"/>
                 <input type="text" className="form-control" id="othrdis" name="othrdis" placeholder="Other Discounts->Ledger"/>
                 <input type="text" className="form-control" id="freight" name="freight" placeholder="Freight"/>
-                <button type="submit" className="btn btn-info" id="btnsave">SAVE PURCHASE</button>
             </form>
+            <button className="btn btn-info" id="btnsave" onClick={handlePurchaseSave}>SAVE PURCHASE</button>
 
         </div>
 
@@ -335,7 +390,7 @@ const PurchaseBillEntry = () => {
                             <div
                                 contentEditable
                                 suppressContentEditableWarning
-                                onBlur={(e) => handleGstChange(e, p)}
+                                onBlur={(e) => handleRowChange(e, p.id, 'item_tax_id')}
                                 style={{ minWidth: "80px" }}
                             >
                                 {p.item_tax_id.item_tax_symbol}
@@ -346,7 +401,7 @@ const PurchaseBillEntry = () => {
                             parseFloat(p.item_child_purchase_rate)
                         ).toFixed(2)}
                         </td>
-                        <td><button className="btn btn-secondary" id="btndelete">Delete</button></td>
+                        <td><button className="btn btn-secondary" id="btndelete" onClick={(e) => handleDelete(e, p.id)}>Delete</button></td>
                     </tr>
                 ))}
                 </tbody>
